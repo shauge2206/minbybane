@@ -312,6 +312,7 @@ export default function App() {
               direction={direction}
               walkMins={walkMins}
               tick={tick}
+              lang={lang}
             />
 
             <DepartureBoard

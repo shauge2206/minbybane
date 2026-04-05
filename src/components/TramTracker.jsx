@@ -10,7 +10,7 @@ function filterByDirection(departures, direction) {
 const MAX_MINS = 22;
 
 // tick prop is consumed to force re-render every interval
-export default function TramTracker({ departures = [], direction, walkMins, tick: _ }) {
+export default function TramTracker({ departures = [], direction, walkMins, tick: _, lang = 'no' }) {
   const now = new Date();
 
   const filtered = filterByDirection(departures, direction)
@@ -30,16 +30,20 @@ export default function TramTracker({ departures = [], direction, walkMins, tick
   // Walk marker position as percentage
   const walkMarkerPct = Math.max(0, Math.min(98, ((MAX_MINS - walkMins) / MAX_MINS) * 100));
 
+  // Departure time label: now + walkMins
+  const leaveAt = new Date(now.getTime() + walkMins * 60000);
+  const leaveAtStr = leaveAt.toLocaleTimeString(lang === 'no' ? 'nb-NO' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
+  const walkLabel = lang === 'no' ? `Gå ${leaveAtStr}` : `Leave ${leaveAtStr}`;
+
   return (
     <div className="tracker">
-      <div className="tracker-label">Live</div>
+      <div className="tracker-label">{lang === 'no' ? 'Live' : 'Live'}</div>
       <div className="tracker-track-wrap">
-        {/* "Her må du gå" annotation above the walk marker */}
         <div
           className="walk-marker-label"
           style={{ left: `${walkMarkerPct}%` }}
         >
-          Her må du gå
+          {walkLabel}
         </div>
 
         <div className="tracker-track">
@@ -77,7 +81,7 @@ export default function TramTracker({ departures = [], direction, walkMins, tick
                 <span className="tram-icon">🚋</span>
                 <div className="tram-labels">
                   <span className="tram-mins">
-                    {Math.round(minsUntil) <= 0 ? 'Nå' : `${Math.round(minsUntil)}m`}
+                    {Math.round(minsUntil) <= 0 ? (lang === 'no' ? 'Nå' : 'Now') : `${Math.round(minsUntil)}m`}
                   </span>
                   {delayLabel && (
                     <span className={`tram-delay ${isEarly ? 'tram-delay--early' : ''}`}>
