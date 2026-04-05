@@ -103,6 +103,46 @@ export default function App() {
   }, []);
 
   if (geoLoading) return <div className="status">{t.statusLocation}</div>;
+  if (geoError === 'PERMISSION_DENIED') {
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    return (
+      <div className="status geo-denied">
+        <div className="geo-denied__icon">📍</div>
+        <h2 className="geo-denied__title">{lang === 'no' ? 'Posisjon blokkert' : 'Location blocked'}</h2>
+        <p className="geo-denied__body">
+          {lang === 'no'
+            ? 'MinByBane trenger tilgang til posisjonen din for å finne nærmeste bybanestopp.'
+            : 'MinByBane needs your location to find the nearest light rail stop.'}
+        </p>
+        <ol className="geo-denied__steps">
+          {isIOS ? (
+            <>
+              <li>{lang === 'no' ? 'Åpne Innstillinger på iPhone/iPad' : 'Open Settings on your iPhone/iPad'}</li>
+              <li>{lang === 'no' ? 'Trykk på Safari (eller nettleseren du bruker)' : 'Tap Safari (or your browser)'}</li>
+              <li>{lang === 'no' ? 'Trykk på «Posisjon» og velg «Spør» eller «Tillat»' : 'Tap "Location" and choose "Ask" or "Allow"'}</li>
+              <li>{lang === 'no' ? 'Last inn siden på nytt' : 'Reload the page'}</li>
+            </>
+          ) : isSafari ? (
+            <>
+              <li>{lang === 'no' ? 'Gå til Safari → Innstillinger for dette nettstedet' : 'Go to Safari → Settings for This Website'}</li>
+              <li>{lang === 'no' ? 'Sett «Posisjon» til «Tillat»' : 'Set "Location" to "Allow"'}</li>
+              <li>{lang === 'no' ? 'Last inn siden på nytt' : 'Reload the page'}</li>
+            </>
+          ) : (
+            <>
+              <li>{lang === 'no' ? 'Klikk på hengelås-ikonet til venstre i adressefeltet' : 'Click the lock icon in the address bar'}</li>
+              <li>{lang === 'no' ? 'Finn «Posisjon» og sett den til «Tillat»' : 'Find "Location" and set it to "Allow"'}</li>
+              <li>{lang === 'no' ? 'Last inn siden på nytt' : 'Reload the page'}</li>
+            </>
+          )}
+        </ol>
+        <button className="geo-denied__reload" onClick={() => window.location.reload()}>
+          {lang === 'no' ? '↺ Last inn på nytt' : '↺ Reload page'}
+        </button>
+      </div>
+    );
+  }
   if (geoError)   return <div className="status error">{geoError}</div>;
   if (loading)    return <div className="status">{t.statusFinding}</div>;
   if (error)      return <div className="status error">{error}</div>;

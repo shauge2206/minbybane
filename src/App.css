@@ -657,3 +657,51 @@ body {
 }
 
 .status.error { color: #c0392b; }
+
+/* ── Geolocation denied screen ── */
+.geo-denied {
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.geo-denied__icon {
+  font-size: 2.5rem;
+}
+
+.geo-denied__title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.geo-denied__body {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.geo-denied__steps {
+  text-align: left;
+  padding-left: 20px;
+  font-size: 0.9rem;
+  color: #333;
+  line-height: 2;
+}
+
+.geo-denied__reload {
+  margin-top: 8px;
+  padding: 10px 24px;
+  background: #e84393;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.geo-denied__reload:hover {
+  background: #c7317a;
+}

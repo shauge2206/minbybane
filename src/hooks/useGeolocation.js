@@ -18,7 +18,7 @@ export function useGeolocation() {
         setLoading(false);
       },
       (err) => {
-        setError('Could not get your location: ' + err.message);
+        setError(err.code === 1 ? 'PERMISSION_DENIED' : 'Could not get your location: ' + err.message);
         setLoading(false);
       }
     );
