@@ -1,5 +1,4 @@
 const JOURNEY_API = 'https://api.entur.io/journey-planner/v3/graphql';
-const VEHICLES_API = 'https://api.entur.io/realtime/v1/vehicles/graphql';
 
 const HEADERS = {
   'Content-Type': 'application/json',
@@ -85,30 +84,4 @@ export async function getDepartures(stopId) {
     );
   }
   return stopPlace;
-}
-
-export async function getVehiclePositions() {
-  const query = `
-    {
-      vehicles(mode: tram, codespaceId: "SKY") {
-        vehicleId
-        lastUpdated
-        location { latitude longitude }
-        heading
-        delay
-        line { lineRef publicCode }
-        serviceJourney { serviceJourneyId }
-        destinationName
-      }
-    }
-  `;
-
-  const res = await fetch(VEHICLES_API, {
-    method: 'POST',
-    headers: HEADERS,
-    body: JSON.stringify({ query }),
-  });
-
-  const data = await res.json();
-  return data.data?.vehicles ?? [];
 }
