@@ -658,6 +658,24 @@ body {
 
 .status.error { color: #c0392b; }
 
+/* ── Footer ── */
+.app-footer {
+  margin-top: auto;
+  padding: 20px 0 8px;
+  font-size: 0.75rem;
+  color: #aaa;
+  text-align: center;
+}
+
+.app-footer a {
+  color: #bbb;
+  text-decoration: none;
+}
+
+.app-footer a:hover {
+  color: #888;
+}
+
 /* ── Geolocation denied screen ── */
 .geo-denied {
   flex-direction: column;

@@ -326,6 +326,10 @@ export default function App() {
             />
           </>
         )}
+
+        <footer className="app-footer">
+          Kontakt: <a href="mailto:shauge2206@gmail.com">shauge2206@gmail.com</a>
+        </footer>
       </main>
     </div>
   );
