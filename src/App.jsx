@@ -199,13 +199,15 @@ export default function App() {
             <button className="lang-btn" onClick={() => setLang(lang === 'no' ? 'en' : 'no')}>
               {t.langToggle}
             </button>
-            <button
-              className={`lang-btn ${demo ? 'lang-btn--demo-on' : ''}`}
-              onClick={() => setDemo((d) => !d)}
-              title="Forhåndsvis driftsmeldinger og lang ventetid"
-            >
-              {demo ? '✕ Demo' : 'Demo'}
-            </button>
+            {import.meta.env.DEV && (
+              <button
+                className={`lang-btn ${demo ? 'lang-btn--demo-on' : ''}`}
+                onClick={() => setDemo((d) => !d)}
+                title="Forhåndsvis driftsmeldinger og lang ventetid"
+              >
+                {demo ? '✕ Demo' : 'Demo'}
+              </button>
+            )}
           </div>
         </div>
 
