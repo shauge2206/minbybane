@@ -75,6 +75,9 @@ body {
 .panel-right {
   background: #f7f7f7;
   animation: fade-in-panel 0.4s ease 0.1s both;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Mobile toggle button — hidden on desktop */
