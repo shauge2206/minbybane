@@ -31,22 +31,6 @@ function filterByDirection(departures = [], direction) {
 const DEPARTURE_REFRESH = 20000;
 const TICK_INTERVAL     = 15000;
 
-const DEMO_SITUATIONS = [
-  {
-    id: 'demo-1',
-    summary: [{ value: 'Bybanen innstilt mellom Lagunen og Flesland grunnet teknisk feil på sporet', language: 'no' }],
-    description: [{ value: 'Bybanen innstilt mellom Lagunen og Flesland grunnet teknisk feil på sporet', language: 'no' }],
-    reportType: 'incident',
-    validityPeriod: { startTime: new Date().toISOString(), endTime: null },
-  },
-  {
-    id: 'demo-2',
-    summary: [{ value: 'Forsinkelser på hele Bybane-linja grunnet arbeid på skinnegangen ved Kronstad', language: 'no' }],
-    description: [],
-    reportType: 'incident',
-    validityPeriod: { startTime: new Date().toISOString(), endTime: null },
-  },
-];
 
 export default function App() {
   const { location, error: geoError, loading: geoLoading } = useGeolocation();
@@ -61,13 +45,32 @@ export default function App() {
   const [lang, setLang]                 = useState('no');
   const [demo, setDemo]                 = useState(false);
   const [panelOpen, setPanelOpen]       = useState(false);
+  const [usingFallback, setUsingFallback] = useState(false);
 
   const t = translations[lang];
+
+  // Bergen Bystasjonen — fallback location when user is far from bybane
+  const BYSTASJONEN = { lat: 60.3887, lon: 5.3318 };
 
   const fetchDepartures = useCallback(async () => {
     if (!location) return;
     try {
-      const edges = await getNearestBybaneStops(location.lat, location.lon);
+      let edges;
+      let fallback = false;
+
+      if (demo) {
+        edges = await getNearestBybaneStops(BYSTASJONEN.lat, BYSTASJONEN.lon);
+        fallback = true;
+      } else {
+        edges = await getNearestBybaneStops(location.lat, location.lon);
+        if (edges.length === 0) {
+          edges = await getNearestBybaneStops(BYSTASJONEN.lat, BYSTASJONEN.lon);
+          fallback = true;
+        }
+      }
+
+      setUsingFallback(fallback);
+
       const results = await Promise.all(
         edges.slice(0, 3).map(async (edge) => {
           const stop = await getDepartures(edge.node.place.id);
@@ -80,7 +83,7 @@ export default function App() {
     } catch {
       setError('Kunne ikke hente avganger. Prøv igjen.');
     }
-  }, [location]);
+  }, [location, demo]);
 
   useEffect(() => {
     if (!location) return;
@@ -124,14 +127,13 @@ export default function App() {
   const longWait     = minsToNext !== null && minsToNext > 60;
 
   // Collect situations from all fetched stops (deduplicated)
-  const realSituations = Object.values(
+  const situations = Object.values(
     stopData.flatMap((s) => s.situations ?? []).reduce((acc, s) => {
       acc[s.id] = s;
       return acc;
     }, {})
   );
-  const situations = demo ? DEMO_SITUATIONS : realSituations;
-  const effectiveLongWait = demo ? true : longWait;
+  const effectiveFallback = usingFallback;
 
   const directionLabel = (d) => ({
     sentrum:       t.directionSentrum,
@@ -234,20 +236,33 @@ export default function App() {
 
         {active && (
           <>
+            {effectiveFallback && (
+              <div className="fallback-banner">
+                <span>📍</span>
+                <span>
+                  {lang === 'no'
+                    ? 'Ingen bybane i nærheten — viser avganger fra Bergen sentrum'
+                    : 'No light rail nearby — showing departures from Bergen centre'}
+                </span>
+              </div>
+            )}
+
             <div className="departure-header">
               <h2 className="stop-title">{active.name}</h2>
               <p className="stop-subtitle">
-                {t.mAway(Math.round(active.distance))} · {t.walkTime(walkMins)} · {subtitleDirection}
+                {effectiveFallback
+                  ? (lang === 'no' ? 'Bergen bystasjonen (standardlokasjon)' : 'Bergen station (default location)')
+                  : `${t.mAway(Math.round(active.distance))} · ${t.walkTime(walkMins)} · ${subtitleDirection}`}
               </p>
             </div>
 
-            {effectiveLongWait && (demo || minsToNext !== null) && (
+            {longWait && minsToNext !== null && (
               <div className="long-wait-banner">
                 <span className="long-wait-icon">🕐</span>
                 <span>
                   {lang === 'no'
-                    ? `Neste avgang om ${demo ? '2.5' : Math.round(minsToNext / 60 * 10) / 10} timer`
-                    : `Next departure in ${demo ? '2.5' : Math.round(minsToNext / 60 * 10) / 10} hours`}
+                    ? `Neste avgang om ${Math.round(minsToNext / 60 * 10) / 10} timer`
+                    : `Next departure in ${Math.round(minsToNext / 60 * 10) / 10} hours`}
                 </span>
               </div>
             )}
