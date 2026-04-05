@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 function filterByDirection(departures, direction) {
   return departures.filter((dep) => {
     const dest = (dep.destinationDisplay?.frontText ?? '').toLowerCase();
@@ -9,8 +11,15 @@ function filterByDirection(departures, direction) {
 
 const MAX_MINS = 22;
 
-// tick prop is consumed to force re-render every interval
+// tick prop kept for API compatibility but unused — component has its own clock
 export default function TramTracker({ departures = [], direction, walkMins, tick: _, lang = 'no' }) {
+  const [, setSecond] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setSecond((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, []);
+
   const now = new Date();
 
   const filtered = filterByDirection(departures, direction)
@@ -27,17 +36,15 @@ export default function TramTracker({ departures = [], direction, walkMins, tick
 
   if (!filtered.length) return null;
 
-  // Walk marker position as percentage
   const walkMarkerPct = Math.max(0, Math.min(98, ((MAX_MINS - walkMins) / MAX_MINS) * 100));
 
-  // Departure time label: now + walkMins
   const leaveAt = new Date(now.getTime() + walkMins * 60000);
   const leaveAtStr = leaveAt.toLocaleTimeString(lang === 'no' ? 'nb-NO' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
   const walkLabel = lang === 'no' ? `Gå ${leaveAtStr}` : `Leave ${leaveAtStr}`;
 
   return (
     <div className="tracker">
-      <div className="tracker-label">{lang === 'no' ? 'Live' : 'Live'}</div>
+      <div className="tracker-label">Live</div>
       <div className="tracker-track-wrap">
         <div
           className="walk-marker-label"
@@ -47,18 +54,15 @@ export default function TramTracker({ departures = [], direction, walkMins, tick
         </div>
 
         <div className="tracker-track">
-          {/* Stop pin */}
           <div className="tracker-stop-pin" />
 
-          {/* Walk threshold line */}
           <div
             className="tracker-walk-marker"
             style={{ left: `${walkMarkerPct}%` }}
           />
 
-          {/* Trams */}
           {filtered.map(({ dep, minsUntil, delaySec, line }, i) => {
-            const pct      = Math.max(2, Math.min(95, ((MAX_MINS - minsUntil) / MAX_MINS) * 100));
+            const pct       = Math.max(2, Math.min(95, ((MAX_MINS - minsUntil) / MAX_MINS) * 100));
             const delayMins = Math.round(delaySec / 60);
             const isLate    = delayMins > 0;
             const isEarly   = delayMins < 0;
@@ -74,7 +78,7 @@ export default function TramTracker({ departures = [], direction, walkMins, tick
               <div
                 key={dep.aimedDepartureTime + i}
                 className={`tram-dot ${!canCatch ? 'tram-dot--missed' : isLate ? 'tram-dot--late' : ''}`}
-                style={{ left: `${pct}%`, transition: 'left 12s linear' }}
+                style={{ left: `${pct}%` }}
                 title={`${dest} — om ${Math.round(minsUntil)} min${isLate ? ` (+${delayMins} min forsinket)` : ''}`}
               >
                 {line && <span className="tram-line-badge">{line}</span>}
