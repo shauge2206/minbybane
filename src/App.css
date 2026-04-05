@@ -351,13 +351,25 @@ body {
   animation: fade-in-panel 0.4s ease both;
 }
 
+.tracker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.tracker-stop-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
 .tracker-label {
   font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #e8008a;
-  margin-bottom: 28px;
   display: flex;
   align-items: center;
   gap: 6px;

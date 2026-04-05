@@ -311,6 +311,7 @@ export default function App() {
 
             <TramTracker
               departures={active.estimatedCalls ?? []}
+              stopName={active.name}
               direction={direction}
               walkMins={walkMins}
               tick={tick}
