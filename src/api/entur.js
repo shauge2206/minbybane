@@ -1,4 +1,5 @@
-const ENTUR_API = 'https://api.entur.io/journey-planner/v3/graphql';
+const JOURNEY_API = 'https://api.entur.io/journey-planner/v3/graphql';
+const VEHICLES_API = 'https://api.entur.io/realtime/v1/vehicles/graphql';
 
 const HEADERS = {
   'Content-Type': 'application/json',
@@ -22,6 +23,8 @@ export async function getNearestBybaneStops(lat, lon, maxDistance = 2000) {
               ... on StopPlace {
                 id
                 name
+                latitude
+                longitude
               }
             }
           }
@@ -30,7 +33,7 @@ export async function getNearestBybaneStops(lat, lon, maxDistance = 2000) {
     }
   `;
 
-  const res = await fetch(ENTUR_API, {
+  const res = await fetch(JOURNEY_API, {
     method: 'POST',
     headers: HEADERS,
     body: JSON.stringify({ query }),
@@ -45,19 +48,22 @@ export async function getDepartures(stopId) {
     {
       stopPlace(id: "${stopId}") {
         name
+        situations {
+          id
+          summary { value language }
+          description { value language }
+          reportType
+          validityPeriod { startTime endTime }
+        }
         estimatedCalls(timeRange: 7200, numberOfDepartures: 30) {
           realtime
           expectedDepartureTime
           aimedDepartureTime
-          destinationDisplay {
-            frontText
-          }
+          destinationDisplay { frontText }
           serviceJourney {
+            id
             journeyPattern {
-              line {
-                publicCode
-                transportMode
-              }
+              line { publicCode transportMode }
             }
           }
         }
@@ -65,7 +71,7 @@ export async function getDepartures(stopId) {
     }
   `;
 
-  const res = await fetch(ENTUR_API, {
+  const res = await fetch(JOURNEY_API, {
     method: 'POST',
     headers: HEADERS,
     body: JSON.stringify({ query }),
@@ -73,4 +79,30 @@ export async function getDepartures(stopId) {
 
   const data = await res.json();
   return data.data?.stopPlace ?? null;
+}
+
+export async function getVehiclePositions() {
+  const query = `
+    {
+      vehicles(mode: tram, codespaceId: "SKY") {
+        vehicleId
+        lastUpdated
+        location { latitude longitude }
+        heading
+        delay
+        line { lineRef publicCode }
+        serviceJourney { serviceJourneyId }
+        destinationName
+      }
+    }
+  `;
+
+  const res = await fetch(VEHICLES_API, {
+    method: 'POST',
+    headers: HEADERS,
+    body: JSON.stringify({ query }),
+  });
+
+  const data = await res.json();
+  return data.data?.vehicles ?? [];
 }

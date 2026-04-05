@@ -12,6 +12,23 @@ body {
 }
 
 /* ── Keyframes ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+
+@keyframes tram-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232, 67, 147, 0.5); }
+  50%       { box-shadow: 0 0 0 8px rgba(232, 67, 147, 0); }
+}
+
+@keyframes tram-pulse-late {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 119, 0, 0.5); }
+  50%       { box-shadow: 0 0 0 8px rgba(255, 119, 0, 0); }
+}
+
+
 @keyframes slide-in {
   from { opacity: 0; transform: translateX(14px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -44,10 +61,6 @@ body {
   min-height: 100vh;
 }
 
-@media (max-width: 720px) {
-  .layout { grid-template-columns: 1fr; }
-}
-
 .panel { padding: 32px 24px; }
 
 .panel-left {
@@ -62,6 +75,82 @@ body {
 .panel-right {
   background: #f7f7f7;
   animation: fade-in-panel 0.4s ease 0.1s both;
+}
+
+/* Mobile toggle button — hidden on desktop */
+.panel-toggle-btn { display: none; }
+
+/* ── Mobile ── */
+@media (max-width: 720px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* Left panel slides off screen by default */
+  .panel-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 300px;
+    z-index: 100;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+    animation: none;
+  }
+
+  .panel-left--open {
+    transform: translateX(0);
+    box-shadow: 6px 0 24px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Dim overlay behind open panel */
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 99;
+    animation: fade-in-panel 0.2s ease both;
+  }
+
+  /* Right panel fills full width */
+  .panel-right {
+    grid-column: 1;
+    padding: 16px;
+    padding-top: 64px;
+  }
+
+  /* Toggle button — visible on mobile */
+  .panel-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 98;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #1c1c1e;
+    color: #fff;
+    border: none;
+    font-size: 1.15rem;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s, background 0.2s;
+  }
+
+  .panel-toggle-btn:hover {
+    background: #2c2c2e;
+    transform: scale(1.05);
+  }
+
+  .panel-is-open .panel-toggle-btn {
+    background: #e8008a;
+  }
 }
 
 /* ── Left panel ── */
@@ -95,6 +184,12 @@ body {
   background: #3a3a3c;
   color: #fff;
   transform: translateY(-1px);
+}
+
+.lang-btn--demo-on {
+  background: #ff7700;
+  border-color: #ff7700;
+  color: #fff;
 }
 
 .control-group {
@@ -145,6 +240,17 @@ body {
   box-shadow: 0 0 0 3px rgba(232, 67, 147, 0.25);
 }
 
+.toggle-btn.disabled,
+.toggle-btn:disabled {
+  background: #222;
+  border-color: #2a2a2a;
+  color: #444;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.5;
+}
+
 .stop-btn {
   display: flex;
   flex-direction: column;
@@ -165,6 +271,250 @@ body {
 
 .toggle-btn.active .stop-meta {
   color: rgba(255, 255, 255, 0.75);
+}
+
+/* ── Service Banner ── */
+.service-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff3cd;
+  border: 1px solid #f0c040;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  animation: fade-in-panel 0.4s ease both;
+}
+
+.service-banner__icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.service-banner__track {
+  overflow: hidden;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.service-banner__text {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #7a5800;
+  animation: marquee 28s linear infinite;
+}
+
+/* ── Long wait banner ── */
+.long-wait-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff0f0;
+  border: 1px solid #f5b5b5;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #b33;
+  animation: fade-in-panel 0.4s ease both;
+}
+
+.long-wait-icon {
+  font-size: 1.3rem;
+}
+
+/* ── Tram Tracker ── */
+.tracker {
+  margin-bottom: 28px;
+  animation: fade-in-panel 0.4s ease both;
+}
+
+.tracker-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #e8008a;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tracker-label::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e8008a;
+  animation: blink-dot 1.2s ease-in-out infinite;
+}
+
+/* Wrap holds both the label and the track */
+.tracker-track-wrap {
+  position: relative;
+  padding-top: 28px; /* room for tram-line-badge above */
+}
+
+/* "Her må du gå" annotation */
+.walk-marker-label {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #e8008a;
+  white-space: nowrap;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.walk-marker-label::after {
+  content: '↓';
+  font-size: 0.7rem;
+  color: #e8008a;
+}
+
+.tracker-track {
+  position: relative;
+  height: 56px;
+  background: #efefef;
+  border-radius: 12px;
+  overflow: visible;
+}
+
+/* Rail line */
+.tracker-track::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  right: 12px;
+  height: 3px;
+  background: linear-gradient(to right, #ddd, #ccc);
+  border-radius: 2px;
+  transform: translateY(-50%);
+}
+
+/* Stop pin on the right */
+.tracker-stop-pin {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #1c1c1e;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px #1c1c1e;
+  z-index: 2;
+}
+
+/* Tram dot */
+.tram-dot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  z-index: 3;
+  cursor: default;
+}
+
+.tram-line-badge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #fff;
+  background: #e8008a;
+  border-radius: 4px;
+  padding: 1px 5px;
+  line-height: 1.4;
+  white-space: nowrap;
+  margin-bottom: 1px;
+}
+
+.tram-dot--missed .tram-line-badge {
+  background: #aaa;
+}
+
+.tram-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+  animation: tram-pulse 2s ease-in-out infinite;
+}
+
+.tram-dot--late .tram-icon {
+  animation: tram-pulse-late 1.4s ease-in-out infinite;
+}
+
+
+.tram-labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.tram-mins {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #333;
+  background: #fff;
+  border-radius: 4px;
+  padding: 1px 4px;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.tram-delay {
+  font-size: 0.58rem;
+  font-weight: 800;
+  color: #ff7700;
+  background: rgba(255,119,0,0.12);
+  border-radius: 4px;
+  padding: 1px 4px;
+  white-space: nowrap;
+}
+
+.tram-delay--early {
+  color: #00b050;
+  background: rgba(0,176,80,0.12);
+}
+
+.tram-dot--missed .tram-icon {
+  opacity: 0.35;
+  filter: grayscale(1);
+  animation: none;
+}
+
+/* Walk threshold dashed line */
+.tracker-walk-marker {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #e8008a 0px,
+    #e8008a 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  transform: translateX(-50%);
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 /* ── Right panel ── */

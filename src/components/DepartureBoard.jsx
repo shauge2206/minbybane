@@ -8,10 +8,10 @@ function formatTime(isoString) {
 function filterByDirection(departures, direction) {
   return departures.filter((dep) => {
     const dest = (dep.destinationDisplay?.frontText ?? '').toLowerCase();
-    if (direction === 'airport') {
-      return dest.includes('flesland') || dest.includes('lufthavn');
-    }
-    return !dest.includes('flesland') && !dest.includes('lufthavn');
+    if (direction === 'airport')        return dest.includes('flesland') || dest.includes('lufthavn');
+    if (direction === 'fyllingsdalen')  return dest.includes('fyllingsdalen');
+    // sentrum: exclude both other branches
+    return !dest.includes('flesland') && !dest.includes('lufthavn') && !dest.includes('fyllingsdalen');
   });
 }
 
