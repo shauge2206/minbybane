@@ -44,10 +44,7 @@ export default function TramTracker({ departures = [], stopName, direction, walk
 
   return (
     <div className="tracker">
-      <div className="tracker-header">
-        {stopName && <span className="tracker-stop-name">{stopName}</span>}
-        <span className="tracker-label">Live</span>
-      </div>
+      <div className="tracker-label">Live</div>
       <div className="tracker-track-wrap">
         <div
           className="walk-marker-label"
@@ -55,6 +52,12 @@ export default function TramTracker({ departures = [], stopName, direction, walk
         >
           {walkLabel}
         </div>
+
+        {stopName && (
+          <div className="tracker-stop-name-label">
+            {stopName}
+          </div>
+        )}
 
         <div className="tracker-track">
           <div className="tracker-stop-pin" />

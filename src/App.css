@@ -351,17 +351,26 @@ body {
   animation: fade-in-panel 0.4s ease both;
 }
 
-.tracker-header {
+.tracker-stop-name-label {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #e8008a;
+  white-space: nowrap;
+  pointer-events: none;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  gap: 2px;
 }
 
-.tracker-stop-name {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #1a1a1a;
+.tracker-stop-name-label::after {
+  content: '↓';
+  font-size: 0.7rem;
+  color: #e8008a;
 }
 
 .tracker-label {
@@ -370,6 +379,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #e8008a;
+  margin-bottom: 28px;
   display: flex;
   align-items: center;
   gap: 6px;
