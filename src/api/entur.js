@@ -55,7 +55,7 @@ export async function getDepartures(stopId) {
           reportType
           validityPeriod { startTime endTime }
         }
-        estimatedCalls(timeRange: 7200, numberOfDepartures: 30, whiteListed: { transportModes: [{ transportMode: tram }] }) {
+        estimatedCalls(timeRange: 7200, numberOfDepartures: 30) {
           realtime
           expectedDepartureTime
           aimedDepartureTime
@@ -78,7 +78,13 @@ export async function getDepartures(stopId) {
   });
 
   const data = await res.json();
-  return data.data?.stopPlace ?? null;
+  const stopPlace = data.data?.stopPlace ?? null;
+  if (stopPlace?.estimatedCalls) {
+    stopPlace.estimatedCalls = stopPlace.estimatedCalls.filter(
+      (c) => c.serviceJourney?.journeyPattern?.line?.transportMode === 'tram'
+    );
+  }
+  return stopPlace;
 }
 
 export async function getVehiclePositions() {
