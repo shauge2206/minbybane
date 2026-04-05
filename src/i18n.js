@@ -1,6 +1,6 @@
 export const translations = {
   no: {
-    appTitle: '🚋 By Bane App',
+    appTitle: '🚋 Bybane App',
     directionLabel: 'Hvilken retning vil du reise?',
     directionSentrum: 'Bergen sentrum',
     directionAirport: 'Flesland (flyplass)',
@@ -27,7 +27,7 @@ export const translations = {
     langToggle: 'EN',
   },
   en: {
-    appTitle: '🚋 By Bane App',
+    appTitle: '🚋 Bybane App',
     directionLabel: 'Which direction are you travelling?',
     directionSentrum: 'Bergen centre',
     directionAirport: 'Flesland (airport)',
