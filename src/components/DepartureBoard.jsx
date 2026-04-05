@@ -46,7 +46,7 @@ export default function DepartureBoard({ departures = [], direction, walkMins, t
               <th></th>
               <th>{t.colLine}</th>
               <th>{t.colDirection}</th>
-              <th>{t.colDeparture}</th>
+              <th className="col-departure">{t.colDeparture}</th>
               <th className="col-leave">{t.colLeave}</th>
             </tr>
           </thead>

@@ -566,12 +566,18 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #aaa;
-  padding-bottom: 10px;
+  padding: 0 12px 10px 6px;
   border-bottom: 1px solid #e0e0e0;
 }
 
+.board th.col-departure,
+.board th.col-leave {
+  text-align: center;
+  padding-right: 6px;
+}
+
 .board td {
-  padding: 13px 6px;
+  padding: 13px 12px 13px 6px;
   border-bottom: 1px solid #ececec;
   font-size: 0.95rem;
   color: #2a2a2a;
