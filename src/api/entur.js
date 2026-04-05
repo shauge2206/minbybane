@@ -55,7 +55,7 @@ export async function getDepartures(stopId) {
           reportType
           validityPeriod { startTime endTime }
         }
-        estimatedCalls(timeRange: 7200, numberOfDepartures: 30) {
+        estimatedCalls(timeRange: 7200, numberOfDepartures: 30, whiteListed: { transportModes: [{ transportMode: tram }] }) {
           realtime
           expectedDepartureTime
           aimedDepartureTime
