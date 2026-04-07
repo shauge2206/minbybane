@@ -12,7 +12,7 @@ export function useGeolocation() {
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
+    const watchId = navigator.geolocation.watchPosition(
       (pos) => {
         setLocation({ lat: pos.coords.latitude, lon: pos.coords.longitude });
         setLoading(false);
@@ -20,8 +20,11 @@ export function useGeolocation() {
       (err) => {
         setError(err.code === 1 ? 'PERMISSION_DENIED' : 'Could not get your location: ' + err.message);
         setLoading(false);
-      }
+      },
+      { enableHighAccuracy: true, maximumAge: 10000 }
     );
+
+    return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
   return { location, error, loading };
